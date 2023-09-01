@@ -98,14 +98,6 @@ typedef struct
     uint32_t bpp;       ///< bits per pixel
 } CapFormatInfo;
 
-typedef struct
-{
-    void* data;
-    uint32_t width;
-    uint32_t height;
-    uint32_t size;
-    uint32_t count;
-} CapFrameData;
 
 #define CAPRESULT_OK  0
 #define CAPRESULT_ERR 1
@@ -236,7 +228,7 @@ DLLPUBLIC uint32_t Cap_hasNewFrame(CapContext ctx, CapStream stream);
     For debugging purposes */
 DLLPUBLIC uint32_t Cap_getStreamFrameCount(CapContext ctx, CapStream stream);
 
-typedef void (*CapFrameCallback)(CapFrameData frameData);
+typedef void (*CapFrameCallback)(uint8_t *data, uint32_t width, uint32_t height, uint32_t size, uint32_t count);
 DLLPUBLIC uint32_t Cap_frameCallback(CapContext ctx, CapStream stream, CapFrameCallback frameCallback);
 
 

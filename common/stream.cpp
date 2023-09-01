@@ -83,18 +83,11 @@ bool Stream::setFrameCallback(CapFrameCallback callback)
 void Stream::callFrameCallback(const uint32_t size) {
     if (m_frameCallback != nullptr)
     {
-        CapFrameData frameData;
-
-        frameData.data = malloc(size);
-        memcpy((uint8_t*)frameData.data, &m_frameBuffer[0], size);
-
-        frameData.width = m_width;
-        frameData.height = m_height;
-        frameData.size = size;
-        frameData.count = m_frames;
-        
-        m_frameCallback(frameData);
-        delete frameData.data;
+        uint8_t *data;
+        data = (uint8_t*)malloc(size);
+        memcpy(data, &m_frameBuffer[0], size);
+        m_frameCallback(data, m_width, m_height, size, m_frames);
+        delete data;
     }
 }
 
