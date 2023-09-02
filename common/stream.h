@@ -68,12 +68,14 @@ public:
 
     bool setFrameCallback(CapFrameCallback callback);
     void callFrameCallback(const uint32_t bytes);
+    bool removeFrameCallback();
     
     /** Set the frame rate of this stream.
         Returns false if the camera does not support the desired
         frame rate.
     */
     virtual bool setFrameRate(uint32_t fps) = 0;
+
 
     /** Returns true if the stream is open and capturing */
     bool isOpen() const

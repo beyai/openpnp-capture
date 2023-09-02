@@ -230,6 +230,7 @@ DLLPUBLIC uint32_t Cap_getStreamFrameCount(CapContext ctx, CapStream stream);
 
 typedef void (*CapFrameCallback)(uint8_t *data, uint32_t width, uint32_t height, uint32_t size, uint32_t count);
 DLLPUBLIC uint32_t Cap_frameCallback(CapContext ctx, CapStream stream, CapFrameCallback frameCallback);
+DLLPUBLIC uint32_t Cap_removeFrameCallback(CapContext ctx, CapStream stream);
 
 
 /********************************************************************************** 

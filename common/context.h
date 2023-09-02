@@ -121,7 +121,7 @@ public:
     uint32_t getStreamFrameCount(int32_t streamID);
 
     bool frameCallback(int32_t streamID, CapFrameCallback frameCallback);
-
+    bool removeFrameCallback(int32_t streamID);
     /** set the frame rate of a stream 
         returns false if the camera does not support the frame rate
     */

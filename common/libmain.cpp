@@ -182,6 +182,17 @@ DLLPUBLIC uint32_t Cap_frameCallback(CapContext ctx, CapStream stream, CapFrameC
     return 0;
 }
 
+DLLPUBLIC uint32_t Cap_removeFrameCallback(CapContext ctx, CapStream stream)
+{
+    if (ctx != 0)
+    {
+        Context *c = reinterpret_cast<Context*>(ctx);
+        return c->removeFrameCallback(stream) ? 1 : 0;
+    }
+    return 0;
+}
+
+
 
 #if 0
 

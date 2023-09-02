@@ -80,6 +80,15 @@ bool Stream::setFrameCallback(CapFrameCallback callback)
     return true;
 }
 
+bool Stream::removeFrameCallback()
+{
+    if (m_frameCallback != nullptr)
+    {
+        m_frameCallback = nullptr;
+    }
+    return true;
+}
+
 void Stream::callFrameCallback(const uint32_t size) {
     if (m_frameCallback != nullptr)
     {
