@@ -96,7 +96,7 @@ void Stream::callFrameCallback(const uint32_t size) {
         data = (uint8_t*)malloc(size);
         memcpy(data, &m_frameBuffer[0], size);
         m_frameCallback(data, m_width, m_height, size, m_frames);
-        delete data;
+        free(data);
     }
 }
 
