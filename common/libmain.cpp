@@ -171,29 +171,6 @@ DLLPUBLIC uint32_t Cap_getStreamFrameCount(CapContext ctx, CapStream stream)
     return 0;
 }
 
-
-DLLPUBLIC uint32_t Cap_frameCallback(CapContext ctx, CapStream stream, CapFrameCallback frameCallback)
-{
-    if (ctx != 0)
-    {
-        Context *c = reinterpret_cast<Context*>(ctx);
-        return c->frameCallback(stream, frameCallback) ? 1 : 0;
-    }
-    return 0;
-}
-
-DLLPUBLIC uint32_t Cap_removeFrameCallback(CapContext ctx, CapStream stream)
-{
-    if (ctx != 0)
-    {
-        Context *c = reinterpret_cast<Context*>(ctx);
-        return c->removeFrameCallback(stream) ? 1 : 0;
-    }
-    return 0;
-}
-
-
-
 #if 0
 
 // not used for now..
@@ -302,6 +279,13 @@ DLLPUBLIC void Cap_installCustomLogFunction(CapCustomLogFunc logFunc)
 {
     installCustomLogFunction(logFunc);
 }
+
+DLLPUBLIC void Cap_installCustomFrameFunction(CapCustomFrameFunc frameFunc)
+{
+    installCustomFrameFunction(frameFunc);
+}
+
+
 
 DLLPUBLIC const char* Cap_getLibraryVersion()
 {

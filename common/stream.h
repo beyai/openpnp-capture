@@ -65,10 +65,6 @@ public:
         must be supplied in RGBbufferBytes.
     */
     bool captureFrame(uint8_t *RGBbufferPtr, uint32_t RGBbufferBytes);
-
-    bool setFrameCallback(CapFrameCallback callback);
-    void callFrameCallback(const uint32_t bytes);
-    bool removeFrameCallback();
     
     /** Set the frame rate of this stream.
         Returns false if the camera does not support the desired
@@ -132,7 +128,6 @@ protected:
     std::vector<uint8_t> m_frameBuffer;     ///< raw frame buffer
     uint32_t    m_frames;                   ///< number of frames captured
 
-    CapFrameCallback m_frameCallback;
 };
 
 #endif

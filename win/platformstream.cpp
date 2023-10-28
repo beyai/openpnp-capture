@@ -167,7 +167,6 @@ void PlatformStream::close()
     m_height = 0;
     m_frameBuffer.resize(0);
     m_isOpen = false;    
-    m_frameCallback = nullptr;
 }
 
 
@@ -390,7 +389,7 @@ bool PlatformStream::open(Context *owner, deviceInfo *device, uint32_t width, ui
     AM_MEDIA_TYPE mt;
     memset(&mt, 0, sizeof(AM_MEDIA_TYPE));
     mt.majortype	= MEDIATYPE_Video;
-    mt.subtype		= MEDIASUBTYPE_RGB24;
+    mt.subtype		= MEDIASUBTYPE_MJPG;
 
     hr = m_sampleGrabber->SetMediaType(&mt);
     if (hr != S_OK)
@@ -847,6 +846,8 @@ void PlatformStream::submitBuffer(const uint8_t *ptr, size_t bytes)
     {
         return;
     }
+    customFrameCallback(ptr, m_width, m_height, bytes, m_frames);
+    return;
 
     m_bufferMutex.lock();
     
@@ -886,7 +887,6 @@ void PlatformStream::submitBuffer(const uint8_t *ptr, size_t bytes)
 
         m_newFrame = true; 
         m_frames++;
-        callFrameCallback(wantSize);
     }
 
     m_bufferMutex.unlock();

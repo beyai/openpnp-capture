@@ -22,7 +22,6 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-
 #include <stdio.h>
 #include <stdarg.h>
 #include "logging.h"
@@ -36,10 +35,16 @@
 
 static uint32_t gs_logLevel = LOG_NOTICE;
 static customLogFunc gs_logFunc = NULL;
+static customFrameFunc gs_frameCallbackFunc = NULL;
 
 void installCustomLogFunction(customLogFunc logfunc)
 {
     gs_logFunc = logfunc;
+}
+
+void installCustomFrameFunction(customFrameFunc frameFunc)
+{
+    gs_frameCallbackFunc = frameFunc;
 }
 
 void LOG(uint32_t logLevel, const char *format, ...)
@@ -104,4 +109,12 @@ void setLogLevel(uint32_t logLevel)
 uint32_t getLogLevel()
 {
     return gs_logLevel;
+}
+
+void customFrameCallback(const uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count)
+{
+    if (gs_frameCallbackFunc != nullptr)
+    {
+        gs_frameCallbackFunc(data, width, height, size, count);
+    }
 }

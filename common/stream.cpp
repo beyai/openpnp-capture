@@ -29,6 +29,7 @@
 #include <memory.h> // for memcpy
 #include "stream.h"
 #include "context.h"
+#include "logging.h"
 
 
 // **********************************************************************
@@ -38,7 +39,6 @@
 Stream::Stream() :
     m_owner(nullptr),
     m_isOpen(false),
-    m_frameCallback(nullptr),
     m_frames(0)
 {
 }
@@ -73,32 +73,6 @@ bool Stream::captureFrame(uint8_t *RGBbufferPtr, uint32_t RGBbufferBytes)
     return true;
 }
 
-bool Stream::setFrameCallback(CapFrameCallback callback)
-{
-    if (!m_isOpen) return false;
-    m_frameCallback = callback;
-    return true;
-}
-
-bool Stream::removeFrameCallback()
-{
-    if (m_frameCallback != nullptr)
-    {
-        m_frameCallback = nullptr;
-    }
-    return true;
-}
-
-void Stream::callFrameCallback(const uint32_t size) {
-    if (m_frameCallback != nullptr)
-    {
-        uint8_t *data;
-        data = (uint8_t*)malloc(size);
-        memcpy(data, &m_frameBuffer[0], size);
-        m_frameCallback(data, m_width, m_height, size, m_frames);
-        free(data);
-    }
-}
 
 void Stream::submitBuffer(const uint8_t *ptr, size_t bytes)
 {
@@ -108,6 +82,8 @@ void Stream::submitBuffer(const uint8_t *ptr, size_t bytes)
         return;
     }
 
+    customFrameCallback(ptr, m_width, m_height, bytes, m_frames);
+    return;
 
     m_bufferMutex.lock();
     
@@ -130,7 +106,6 @@ void Stream::submitBuffer(const uint8_t *ptr, size_t bytes)
         memcpy(&m_frameBuffer[0], ptr, bytes);
         m_newFrame = true; 
         m_frames++;
-        callFrameCallback(wantSize);
     }
 
     m_bufferMutex.unlock();

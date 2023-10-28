@@ -377,7 +377,6 @@ void PlatformStream::close()
     ::close(m_deviceHandle);
 
     m_deviceHandle = -1;    
-    m_frameCallback = nullptr;
 }
 
 void test(size_t bufferSizeBytes)

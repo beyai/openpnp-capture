@@ -26,6 +26,7 @@
 #ifndef logging_h
 #define logging_h
 
+#include <stddef.h>
 #include <stdint.h>
 
 // define log levels
@@ -56,5 +57,10 @@ typedef void (*customLogFunc)(uint32_t logLevel, const char *logString);
           from the same thead, depending on the platform!
 */
 void installCustomLogFunction(customLogFunc logfunc);
+
+/** define a custom frame function callback */
+typedef void (*customFrameFunc)(const uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count);
+void installCustomFrameFunction(customFrameFunc frameFunc);
+void customFrameCallback(const uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count);
 
 #endif

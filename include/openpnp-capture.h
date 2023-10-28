@@ -228,10 +228,6 @@ DLLPUBLIC uint32_t Cap_hasNewFrame(CapContext ctx, CapStream stream);
     For debugging purposes */
 DLLPUBLIC uint32_t Cap_getStreamFrameCount(CapContext ctx, CapStream stream);
 
-typedef void (*CapFrameCallback)(uint8_t *data, uint32_t width, uint32_t height, uint32_t size, uint32_t count);
-DLLPUBLIC uint32_t Cap_frameCallback(CapContext ctx, CapStream stream, CapFrameCallback frameCallback);
-DLLPUBLIC uint32_t Cap_removeFrameCallback(CapContext ctx, CapStream stream);
-
 
 /********************************************************************************** 
      NEW CAMERA CONTROL API FUNCTIONS
@@ -311,6 +307,10 @@ typedef void (*CapCustomLogFunc)(uint32_t level, const char *string);
         void func(uint32_t level, const char *string);
 */
 DLLPUBLIC void Cap_installCustomLogFunction(CapCustomLogFunc logFunc);
+
+
+typedef void (*CapCustomFrameFunc)(const uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count);
+DLLPUBLIC void Cap_installCustomFrameFunction(CapCustomFrameFunc frameFunc);
 
 /** Return the version of the library as a string.
     In addition to a version number, this should 

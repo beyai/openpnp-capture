@@ -137,7 +137,6 @@ void PlatformStream::close()
     m_fourCC = 0;
     m_isOpen = false;
     m_device = nullptr; // note: we don't own the device object!
-    m_frameCallback = nullptr;
 }
 
 bool PlatformStream::open(Context *owner, deviceInfo *device, uint32_t width, uint32_t height, 

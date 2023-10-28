@@ -268,39 +268,6 @@ uint32_t Context::getStreamFrameCount(int32_t streamID)
     return stream->getFrameCount();
 }
 
-bool Context::frameCallback(int32_t streamID, CapFrameCallback frameCallback)
-{
-    if (streamID < 0)
-    {
-        LOG(LOG_ERR, "frameCallback was called with a negative stream ID\n");
-        return false;
-    }
-    Stream *stream = m_streams[streamID];
-    if (stream == nullptr)
-    {
-        LOG(LOG_ERR, "frameCallback was called with an unknown stream ID\n");
-        return false; 
-    }
-    return stream->setFrameCallback(frameCallback);
-}
-
-bool Context::removeFrameCallback(int32_t streamID)
-{
-    if (streamID < 0)
-    {
-        LOG(LOG_ERR, "removeFrameCallback was called with a negative stream ID\n");
-        return false;
-    }
-    Stream *stream = m_streams[streamID];
-    if (stream == nullptr)
-    {
-        LOG(LOG_ERR, "removeFrameCallback was called with an unknown stream ID\n");
-        return false; 
-    }
-    return stream->removeFrameCallback();
-}
-
-
 bool Context::setStreamFrameRate(int32_t streamID, uint32_t fps)
 {
     if (streamID < 0)
