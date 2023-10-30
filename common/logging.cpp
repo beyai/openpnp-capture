@@ -47,6 +47,11 @@ void installCustomFrameFunction(customFrameFunc frameFunc)
     gs_frameCallbackFunc = frameFunc;
 }
 
+void removeCustomFrameFunction()
+{
+    gs_frameCallbackFunc = NULL;
+}
+
 void LOG(uint32_t logLevel, const char *format, ...)
 {
     if (logLevel > gs_logLevel)
@@ -111,7 +116,7 @@ uint32_t getLogLevel()
     return gs_logLevel;
 }
 
-void customFrameCallback(const uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count)
+void customFrameCallback(uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count)
 {
     if (gs_frameCallbackFunc != nullptr)
     {

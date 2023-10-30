@@ -309,8 +309,9 @@ typedef void (*CapCustomLogFunc)(uint32_t level, const char *string);
 DLLPUBLIC void Cap_installCustomLogFunction(CapCustomLogFunc logFunc);
 
 
-typedef void (*CapCustomFrameFunc)(const uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count);
+typedef void (*CapCustomFrameFunc)(uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count);
 DLLPUBLIC void Cap_installCustomFrameFunction(CapCustomFrameFunc frameFunc);
+DLLPUBLIC void Cap_removeCustomFrameFunction();
 
 /** Return the version of the library as a string.
     In addition to a version number, this should 

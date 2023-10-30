@@ -389,6 +389,7 @@ bool PlatformStream::open(Context *owner, deviceInfo *device, uint32_t width, ui
     AM_MEDIA_TYPE mt;
     memset(&mt, 0, sizeof(AM_MEDIA_TYPE));
     mt.majortype	= MEDIATYPE_Video;
+    // mt.subtype		= MEDIASUBTYPE_RGB24;
     mt.subtype		= MEDIASUBTYPE_MJPG;
 
     hr = m_sampleGrabber->SetMediaType(&mt);
@@ -408,7 +409,9 @@ bool PlatformStream::open(Context *owner, deviceInfo *device, uint32_t width, ui
         m_callbackHandler->reset();
     }
 
-    hr = m_sampleGrabber->SetCallback(m_callbackHandler,0);
+    m_sampleGrabber->SetBufferSamples(false);
+    m_sampleGrabber->SetOneShot(false);
+    hr = m_sampleGrabber->SetCallback(m_callbackHandler, 0);
     if (hr != S_OK)
     {
         LOG(LOG_ERR,"Could not set callback on sample grabber (HRESULT=%08X)\n", hr);
@@ -474,10 +477,10 @@ bool PlatformStream::open(Context *owner, deviceInfo *device, uint32_t width, ui
             m_height = vi->bmiHeader.biHeight;
             memcpy(&m_videoInfo, vi, sizeof(VIDEOINFOHEADER)); // save video header information
             LOG(LOG_INFO, "Width = %d, Height = %d\n", m_width, m_height);
-
+            
             //FIXME: for now, just set the frame buffer size to
             //       width*height*3 for 24 RGB raw images
-            m_frameBuffer.resize(m_width*m_height*3);                  
+            m_frameBuffer.resize(m_width*m_height*3); 
         }
         CoTaskMemFree( info->pbFormat );        
     }
@@ -846,50 +849,60 @@ void PlatformStream::submitBuffer(const uint8_t *ptr, size_t bytes)
     {
         return;
     }
-    customFrameCallback(ptr, m_width, m_height, bytes, m_frames);
-    return;
 
-    m_bufferMutex.lock();
+    uint32_t size = (uint32_t)bytes;
+    uint8_t *data;
+    data = (uint8_t*)malloc(size);
+    memcpy(data, &ptr[0], bytes);
+    m_newFrame = true;
+    m_frames++;
+    customFrameCallback(data, m_width, m_height, bytes, m_frames);
+    free(data);
+    m_newFrame = false;
+
+    // return;
+
+    // m_bufferMutex.lock();
     
-    if (m_frameBuffer.size() == 0)
-    {
-        LOG(LOG_ERR,"Stream::m_frameBuffer size is 0 - cant store frame buffers!\n");
-    }
+    // if (m_frameBuffer.size() == 0)
+    // {
+    //     LOG(LOG_ERR,"Stream::m_frameBuffer size is 0 - cant store frame buffers!\n");
+    // }
 
-    // Generate warning every 100 frames if the frame buffer is not
-    // the expected size. 
+    // // Generate warning every 100 frames if the frame buffer is not
+    // // the expected size. 
     
-    const uint32_t wantSize = m_width*m_height*3;
-    if ((bytes != wantSize) && ((m_frames % 100) == 0))
-    {
-        LOG(LOG_WARNING, "Warning: captureFrame received incorrect buffer size (got %d want %d)\n", bytes, wantSize);
-    }
+    // const uint32_t wantSize = m_width*m_height*3;
+    // if ((bytes != wantSize) && ((m_frames % 100) == 0))
+    // {
+    //     LOG(LOG_WARNING, "Warning: captureFrame received incorrect buffer size (got %d want %d)\n", bytes, wantSize);
+    // }
 
-    if (bytes <= m_frameBuffer.size())
-    {
-        // The Win32 API delivers upside-down BGR frames.
-        // Conversion to regular RGB frames is done by
-        // byte-reversing the buffer
-        for(size_t y=0; y<m_height; y++)
-        {
-            uint8_t *dst = &m_frameBuffer[(y*m_width)*3];
-            const uint8_t *src = ptr + (m_width*3)*(m_height-y-1);
-            for(uint32_t x=0; x<m_width; x++)
-            {
-                uint8_t b = *src++;
-                uint8_t g = *src++;
-                uint8_t r = *src++;
-                *dst++ = r;
-                *dst++ = g;
-                *dst++ = b;
-            }
-        }
+    // if (bytes <= m_frameBuffer.size())
+    // {
+    //     // The Win32 API delivers upside-down BGR frames.
+    //     // Conversion to regular RGB frames is done by
+    //     // byte-reversing the buffer
+    //     for(size_t y=0; y<m_height; y++)
+    //     {
+    //         uint8_t *dst = &m_frameBuffer[(y*m_width)*3];
+    //         const uint8_t *src = ptr + (m_width*3)*(m_height-y-1);
+    //         for(uint32_t x=0; x<m_width; x++)
+    //         {
+    //             uint8_t b = *src++;
+    //             uint8_t g = *src++;
+    //             uint8_t r = *src++;
+    //             *dst++ = r;
+    //             *dst++ = g;
+    //             *dst++ = b;
+    //         }
+    //     }
 
-        m_newFrame = true; 
-        m_frames++;
-    }
+    //     m_newFrame = true; 
+    //     m_frames++;
+    // }
 
-    m_bufferMutex.unlock();
+    // m_bufferMutex.unlock();
 
     
 }

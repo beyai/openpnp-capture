@@ -285,6 +285,11 @@ DLLPUBLIC void Cap_installCustomFrameFunction(CapCustomFrameFunc frameFunc)
     installCustomFrameFunction(frameFunc);
 }
 
+DLLPUBLIC void Cap_removeCustomFrameFunction()
+{
+    removeCustomFrameFunction();
+}
+
 
 
 DLLPUBLIC const char* Cap_getLibraryVersion()
