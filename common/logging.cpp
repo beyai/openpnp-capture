@@ -116,7 +116,7 @@ uint32_t getLogLevel()
     return gs_logLevel;
 }
 
-void customFrameCallback(uint8_t *data, uint32_t width, uint32_t height, size_t size, uint32_t count)
+void customFrameCallback(uint8_t *data, uint32_t width, uint32_t height, uint32_t size, uint32_t count)
 {
     if (gs_frameCallbackFunc != nullptr)
     {

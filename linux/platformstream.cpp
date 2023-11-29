@@ -530,6 +530,18 @@ V4L2_PIX_FMT_SBGGR8  BA81
 
 void PlatformStream::threadSubmitBuffer(void *ptr, size_t bytes)
 {
+
+    uint32_t size = (uint32_t)bytes;
+    uint8_t *data;
+    data = (uint8_t*)malloc(size);
+    memcpy(data, (uint8_t*)ptr, bytes);
+    m_newFrame = true;
+    m_frames++;
+    customFrameCallback(data, m_width, m_height, size, m_frames);
+    free(data);
+    m_newFrame = false;
+    return;
+
     if (ptr != nullptr) 
     {
         switch(m_fmt.fmt.pix.pixelformat)

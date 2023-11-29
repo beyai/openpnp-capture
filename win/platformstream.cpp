@@ -856,7 +856,7 @@ void PlatformStream::submitBuffer(const uint8_t *ptr, size_t bytes)
     memcpy(data, &ptr[0], bytes);
     m_newFrame = true;
     m_frames++;
-    customFrameCallback(data, m_width, m_height, bytes, m_frames);
+    customFrameCallback(data, m_width, m_height, size, m_frames);
     free(data);
     m_newFrame = false;
 

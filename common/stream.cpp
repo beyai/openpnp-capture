@@ -81,14 +81,13 @@ void Stream::submitBuffer(const uint8_t *ptr, size_t bytes)
     {
         return;
     }
-
     uint32_t size = (uint32_t)bytes;
     uint8_t *data;
     data = (uint8_t*)malloc(size);
     memcpy(data, ptr, bytes);
     m_newFrame = true;
     m_frames++;
-    customFrameCallback(data, m_width, m_height, bytes, m_frames);
+    customFrameCallback(data, m_width, m_height, size, m_frames);
     free(data);
     m_newFrame = false;
     return;
