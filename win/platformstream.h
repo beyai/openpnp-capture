@@ -156,7 +156,7 @@ public:
 
 protected:
     /** A re-implementation of Stream::submitBuffer with BGR to RGB conversion */
-    virtual void submitBuffer(const uint8_t *ptr, size_t bytes) override;
+    // virtual void submitBuffer(const uint8_t *ptr, size_t bytes) override;
 
     /** Add the Direct show filter graph to the object list so
         GraphEdt.exe can see it - for debugging purposes only.

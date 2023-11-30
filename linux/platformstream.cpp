@@ -530,66 +530,55 @@ V4L2_PIX_FMT_SBGGR8  BA81
 
 void PlatformStream::threadSubmitBuffer(void *ptr, size_t bytes)
 {
-
-    uint32_t size = (uint32_t)bytes;
-    uint8_t *data;
-    data = (uint8_t*)malloc(size);
-    memcpy(data, (uint8_t*)ptr, bytes);
-    m_newFrame = true;
-    m_frames++;
-    customFrameCallback(data, m_width, m_height, size, m_frames);
-    free(data);
-    m_newFrame = false;
-    return;
-
     if (ptr != nullptr) 
     {
-        switch(m_fmt.fmt.pix.pixelformat)
-        {
-        case V4L2_PIX_FMT_RGB24:
-            Stream::submitBuffer((uint8_t*)ptr, bytes);
-            break;
-        case V4L2_PIX_FMT_YUYV:
-            // here we implement our own ::submitBuffer replacement
-            // so we can decode the 16-bit YUYV frames and copy the 24-bit
-            // RGB pixels into m_frameBuffer
-            m_bufferMutex.lock();
-            YUYV2RGB((const uint8_t*)ptr, &m_frameBuffer[0], bytes);
-            m_newFrame = true;
-            m_frames++;
-            m_bufferMutex.unlock();
-            break;            
-        case 0x47504A4D:    // MJPG
-            #ifdef FRAMEDUMP
-            {
-                static int32_t fcnt = 0;
-                char fname[100];
-                if (fcnt < 10)
-                {
-                    sprintf(fname,"frame_%d.dat", fcnt++);
-                    FILE *fout = fopen(fname, "wb");
-                    fwrite(ptr, 1, bytes, fout);
-                    fclose(fout);
-                }
-            }
-            #endif        
+        Stream::submitBuffer((uint8_t*)ptr, bytes);
+        // switch(m_fmt.fmt.pix.pixelformat)
+        // {
+        // case V4L2_PIX_FMT_RGB24:
+        //     Stream::submitBuffer((uint8_t*)ptr, bytes);
+        //     break;
+        // case V4L2_PIX_FMT_YUYV:
+        //     // here we implement our own ::submitBuffer replacement
+        //     // so we can decode the 16-bit YUYV frames and copy the 24-bit
+        //     // RGB pixels into m_frameBuffer
+        //     m_bufferMutex.lock();
+        //     YUYV2RGB((const uint8_t*)ptr, &m_frameBuffer[0], bytes);
+        //     m_newFrame = true;
+        //     m_frames++;
+        //     m_bufferMutex.unlock();
+        //     break; 
+        // case 0x47504A4D:    // MJPG
+        //     #ifdef FRAMEDUMP
+        //     {
+        //         static int32_t fcnt = 0;
+        //         char fname[100];
+        //         if (fcnt < 10)
+        //         {
+        //             sprintf(fname,"frame_%d.dat", fcnt++);
+        //             FILE *fout = fopen(fname, "wb");
+        //             fwrite(ptr, 1, bytes, fout);
+        //             fclose(fout);
+        //         }
+        //     }
+        //     #endif        
 
-            // here we implement our own ::submitBuffer replacement
-            // so we can decode the MJEG frames and copy the 24-bit
-            // RGB pixels into m_frameBuffer
-            m_bufferMutex.lock();
-            if (m_mjpegHelper.decompressFrame((uint8_t*)ptr, bytes, &m_frameBuffer[0], m_width, m_height))
-            {
-                m_newFrame = true; 
-                m_frames++;
-            }
-            m_bufferMutex.unlock();
-            break;
-        default:
-            LOG(LOG_DEBUG, "ThreadSubmitBuffer: unsupported format %s (%08X)\n", fourCCToString(m_fmt.fmt.pix.pixelformat).c_str(),
-                m_fmt.fmt.pix.pixelformat);
-            break;
-        }        
+        //     // here we implement our own ::submitBuffer replacement
+        //     // so we can decode the MJEG frames and copy the 24-bit
+        //     // RGB pixels into m_frameBuffer
+        //     m_bufferMutex.lock();
+        //     if (m_mjpegHelper.decompressFrame((uint8_t*)ptr, bytes, &m_frameBuffer[0], m_width, m_height))
+        //     {
+        //         m_newFrame = true; 
+        //         m_frames++;
+        //     }
+        //     m_bufferMutex.unlock();
+        //     break;
+        // default:
+        //     LOG(LOG_DEBUG, "ThreadSubmitBuffer: unsupported format %s (%08X)\n", fourCCToString(m_fmt.fmt.pix.pixelformat).c_str(),
+        //         m_fmt.fmt.pix.pixelformat);
+        //     break;
+        // }        
     }
 }
 
